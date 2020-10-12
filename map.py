@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 import numpy as np
+import copy
+from block import Block
 
 class MainMap:
     MAX_WIDTH=22
@@ -11,7 +13,8 @@ class MainMap:
         self.score = 0
         self.curWidth = 0
         self.curHeigth = 0
-        self.mapArray = np.zeros([MainMap.MAX_WIDTH,MainMap.MAX_HEIGHT,3])
+        # For Bump
+        self.mapArray = np.zeros([MainMap.MAX_WIDTH+4,MainMap.MAX_HEIGHT+4,3])
         self.union = 0
         self.unionLev = 0
         self.curUnit = 0
@@ -22,8 +25,45 @@ class MainMap:
 
     def isslotpossible (self, row, column):
         return self.mapArray[row, column, 1]
-    def isslotoccupy (self, row, column):
-        return self.mapArray[row, column, 2]
+
+    def addblock (self, row, column, block):
+        retq = []
+        for i in range (5):
+            for j in range (5):
+                if block.map[i,j] == 0:
+                    continue
+                new_map = copy.deepcopy (self.mapArray[:,:,:])
+                new_map_c = new_map[row-j:row-j+5, column-i:column-i+5,1]
+                new_map_c -= block.map
+
+                # Check possibility
+                possi = True
+                for ii in range (5):
+                    for jj in range (5):
+                        if new_map_c[ii,jj] < 0:
+                            possi = False
+
+                if possi == True:
+                    retq.append (new_map)
+
+        return retq
+
+    def updatemap (self, new_map):
+        self.mapArray = new_map                
+                
+    def printmap(self, e):
+        emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2) + 2
+
+        print ("    ",end='')
+        for i in range (emptyline, MainMap.MAX_WIDTH-emptyline):
+            print ("%02d  "%(i), end='')
+        print ("")
+        print ("    " + "----"*24)
+        for i in range (emptyline, MainMap.MAX_HEIGHT-emptyline):
+            print ("%02d| "%(i),end='')
+            for j in range (emptyline, MainMap.MAX_WIDTH-emptyline):
+                print ("%02d  " %(self.mapArray[i,j,e]), end='')
+            print ("")
 
     def initialize(self, union):
         if union > MainMap.MAX_UNION:
@@ -65,7 +105,7 @@ class MainMap:
             self.curHeight = 10
 
         # Initialize Map
-        emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2)
+        emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2) + 2
         for i in range (emptyline, MainMap.MAX_HEIGHT-emptyline):
             for j in range (emptyline, MainMap.MAX_WIDTH-emptyline):
                 # Set current slot is possible
@@ -106,8 +146,6 @@ class MainMap:
                 else:
                     print ("Couldn't be here i : %d j : %d" %(i,j))
 
-                print ("%02d  " %(self.mapArray[i,j,0]), end='')
-            print ("")
 
 
 
