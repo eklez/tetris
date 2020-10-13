@@ -14,7 +14,7 @@ class MainMap:
         self.curWidth = 0
         self.curHeigth = 0
         # For Bump
-        self.mapArray = np.zeros([MainMap.MAX_WIDTH+8,MainMap.MAX_HEIGHT+8,3])
+        self.mapArray = np.zeros([MainMap.MAX_HEIGHT+8,MainMap.MAX_WIDTH+8,3])
         self.union = 0
         self.unionLev = 0
         self.curUnit = 0
@@ -53,6 +53,12 @@ class MainMap:
 
     def updatemap (self, new_map):
         self.mapArray = new_map                
+
+    def updatescore (self, s, score):
+        for i in range (MainMap.MAX_HEIGHT + 8):
+            for j in range (MainMap.MAX_WIDTH + 8):
+                if self.mapArray[i,j,0] == s:
+                    self.mapArray[i,j,2] = score
                 
     def printmap(self, e):
         emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2) + 4

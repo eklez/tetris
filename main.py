@@ -5,6 +5,7 @@ import configparser
 
 blockList = []
 TOTAL_UNION = 0
+config = configparser.ConfigParser ()
 
 def genblock (c, l):
     return Block (c, l)
@@ -18,9 +19,8 @@ def genblockclass (c, s):
             blockList.append (new_block)
         level += 1
 
-
 def readconf ():
-    config = configparser.ConfigParser ()
+    global config
     config.read ('config.ini')
     if not 'UNION_LEV' in config.sections ():
         print ("UNION_LEV in config.ini")
@@ -41,6 +41,13 @@ def readconf ():
     genblockclass (3, classthree)
     genblockclass (4, classfour)
 
+def initialize_score (m):
+    global config
+
+    for i in range (16):
+        score = int (config['SECTION_SCORE']['SEC'+str(i)])
+        m.updatescore (i, score)
+
 def main_start ():
 
     # Initialize
@@ -48,8 +55,9 @@ def main_start ():
         return False
     mainMap = MainMap ()
     mainMap.initialize (TOTAL_UNION)
+    initialize_score (mainMap)
 
-    print (len (blockList))
+    mainMap.printmap (2)
 
 if __name__ == "__main__":
     main_start ()
