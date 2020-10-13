@@ -6,7 +6,7 @@ def main_start ():
     mainMap = MainMap ()
     mainMap.initialize (8020)
     new_block = Block (0, 4)
-    ret = mainMap.addblock (10,10, new_block)
+    ret = mainMap.addblock (0,1, new_block)
 
     for i in ret:
         i.printmap (1)

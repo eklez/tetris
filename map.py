@@ -14,7 +14,7 @@ class MainMap:
         self.curWidth = 0
         self.curHeigth = 0
         # For Bump
-        self.mapArray = np.zeros([MainMap.MAX_WIDTH+4,MainMap.MAX_HEIGHT+4,3])
+        self.mapArray = np.zeros([MainMap.MAX_WIDTH+8,MainMap.MAX_HEIGHT+8,3])
         self.union = 0
         self.unionLev = 0
         self.curUnit = 0
@@ -28,6 +28,8 @@ class MainMap:
 
     def addblock (self, row, column, block):
         retq = []
+        row += 4
+        column += 4
         for i in range (5):
             for j in range (5):
                 if block.map[i,j] == 0:
@@ -53,16 +55,16 @@ class MainMap:
         self.mapArray = new_map                
                 
     def printmap(self, e):
-        emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2) + 2
+        emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2) + 4
 
         print ("    ",end='')
-        for i in range (emptyline, MainMap.MAX_WIDTH+4-emptyline):
+        for i in range (emptyline, MainMap.MAX_WIDTH+8-emptyline):
             print ("%02d  "%(i - emptyline), end='')
         print ("")
         print ("    " + "----"*24)
-        for i in range (emptyline, MainMap.MAX_HEIGHT+4-emptyline):
+        for i in range (emptyline, MainMap.MAX_HEIGHT+8-emptyline):
             print ("%02d| "%(i - emptyline),end='')
-            for j in range (emptyline, MainMap.MAX_WIDTH+4-emptyline):
+            for j in range (emptyline, MainMap.MAX_WIDTH+8-emptyline):
                 print ("\033[0;%dm" %(30+self.mapArray[i,j,0]%8), end='')
                 print ("%02d  " %(self.mapArray[i,j,e]), end='')
                 print ("\033[0m", end='')
@@ -108,43 +110,43 @@ class MainMap:
             self.curHeight = 10
 
         # Initialize Map
-        emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2) + 2
-        for i in range (emptyline, MainMap.MAX_HEIGHT+4-emptyline):
-            for j in range (emptyline, MainMap.MAX_WIDTH+4-emptyline):
+        emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2) + 4
+        for i in range (emptyline, MainMap.MAX_HEIGHT+8-emptyline):
+            for j in range (emptyline, MainMap.MAX_WIDTH+8-emptyline):
                 # Set current slot is possible
                 self.mapArray[i,j,1] = 1
                 # Set section of map
-                if i >= j and i < (MainMap.MAX_HEIGHT+4-j) and i < 12 and j < 13:
+                if i >= j and i < (MainMap.MAX_HEIGHT+8-j) and i < 14 and j < 15:
                     self.mapArray[i,j,0] = 0
-                    if j > 6:
+                    if j > 8:
                         self.mapArray[i,j,0] += 1
-                elif i >= j-1 and i < (MainMap.MAX_HEIGHT+4-j) and i >= 12 and j < 13:
+                elif i >= j-1 and i < (MainMap.MAX_HEIGHT+8-j) and i >= 14 and j < 15:
                     self.mapArray[i,j,0] = 2
-                    if j > 6:
+                    if j > 8:
                         self.mapArray[i,j,0] += 1
-                elif i >= j-1 and i >= (MainMap.MAX_HEIGHT+4-j) and i >= 12 and j < 13:
+                elif i >= j-1 and i >= (MainMap.MAX_HEIGHT+8-j) and i >= 14 and j < 15:
                     self.mapArray[i,j,0] = 4
-                    if i < 17:
+                    if i < 19:
                         self.mapArray[i,j,0] += 1
-                elif i >= j-1 and i >= (MainMap.MAX_HEIGHT+4+1-j) and i >= 12 and j >= 13:
+                elif i >= j-1 and i >= (MainMap.MAX_HEIGHT+8+1-j) and i >= 14 and j >= 15:
                     self.mapArray[i,j,0] = 6
-                    if i < 17:
+                    if i < 19:
                         self.mapArray[i,j,0] += 1
-                elif i < j-1 and i >= (MainMap.MAX_HEIGHT+4+1-j) and i >= 12 and j >= 13:
+                elif i < j-1 and i >= (MainMap.MAX_HEIGHT+8+1-j) and i >= 14 and j >= 15:
                     self.mapArray[i,j,0] = 8
-                    if j < 19:
+                    if j < 21:
                         self.mapArray[i,j,0] += 1
-                elif i < j and i >= (MainMap.MAX_HEIGHT+4+1-j) and i < 12 and j >= 13:
+                elif i < j and i >= (MainMap.MAX_HEIGHT+8+1-j) and i < 14 and j >= 15:
                     self.mapArray[i,j,0] = 10
-                    if j < 19:
+                    if j < 21:
                         self.mapArray[i,j,0] += 1
-                elif i < j and i < (MainMap.MAX_HEIGHT+4+1-j) and i < 12 and j >= 13:
+                elif i < j and i < (MainMap.MAX_HEIGHT+8+1-j) and i < 14 and j >= 15:
                     self.mapArray[i,j,0] = 12
-                    if i > 6:
+                    if i > 8:
                         self.mapArray[i,j,0] += 1
-                elif i < j and i < (MainMap.MAX_HEIGHT+4-j) and i < 12 and j < 13:
+                elif i < j and i < (MainMap.MAX_HEIGHT+8-j) and i < 14 and j < 15:
                     self.mapArray[i,j,0] = 14
-                    if i > 6:
+                    if i > 8:
                         self.mapArray[i,j,0] += 1
                 else:
                     print ("Couldn't be here i : %d j : %d" %(i,j))
