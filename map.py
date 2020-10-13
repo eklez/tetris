@@ -20,6 +20,9 @@ class MainMap:
         self.curUnit = 0
         self.mapMaxUnit = 0
 
+        self.blockList = []
+        self.useBlockNum = 0
+
     def calcscore(self):
         return self.score
 
@@ -36,29 +39,40 @@ class MainMap:
                     continue
                 new_obj = copy.deepcopy (self)
                 new_map = new_obj.mapArray[:,:,:]
-                new_map = new_map[row-j:row-j+5, column-i:column-i+5,1]
-                new_map -= block.map
+                new_map_1 = new_map[row-j:row-j+5, column-i:column-i+5,1]
+                new_map_2 = new_map[row-j:row-j+5, column-i:column-i+5,2]
+
+                new_map_1 -= block.map
 
                 # Check possibility
                 possi = True
+                new_score = 0
                 for ii in range (5):
                     for jj in range (5):
-                        if new_map[ii,jj] < 0:
+                        if new_map_1[ii,jj] < 0:
                             possi = False
+                        else:
+                            new_score += new_map_2[ii,jj]
 
                 if possi == True:
+                    new_obj.updatescore (new_obj.score + new_score)        
                     retq.append (new_obj)
 
         return retq
 
     def updatemap (self, new_map):
-        self.mapArray = new_map                
+        self.mapArray = new_map
+    def updatescore (self, score):
+        self.score = score
 
-    def updatescore (self, s, score):
+    def initscore (self, s, score):
         for i in range (MainMap.MAX_HEIGHT + 8):
             for j in range (MainMap.MAX_WIDTH + 8):
                 if self.mapArray[i,j,0] == s:
                     self.mapArray[i,j,2] = score
+
+    def updateblocklist (self, blockList):
+        self.blockList = copy.deepcopy (blockList)
                 
     def printmap(self, e):
         emptyline = int ((MainMap.MAX_WIDTH - self.curWidth)/2) + 4

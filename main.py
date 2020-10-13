@@ -46,7 +46,7 @@ def initialize_score (m):
 
     for i in range (16):
         score = int (config['SECTION_SCORE']['SEC'+str(i)])
-        m.updatescore (i, score)
+        m.initscore (i, score)
 
 def main_start ():
 
@@ -55,9 +55,14 @@ def main_start ():
         return False
     mainMap = MainMap ()
     mainMap.initialize (TOTAL_UNION)
+    mainMap.updateblocklist (blockList)
     initialize_score (mainMap)
 
     mainMap.printmap (2)
+    ret = mainMap.addblock (10,10,mainMap.blockList[0])
+    for i in ret:
+        print (i.score)
+        i.printmap (1)
 
 if __name__ == "__main__":
     main_start ()
