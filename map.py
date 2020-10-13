@@ -5,7 +5,7 @@ from block import Block
 
 class MainMap:
     MAX_WIDTH=22
-    MAX_HEIGHT=22
+    MAX_HEIGHT=20
     MAX_UNIT=40
     MAX_UNION=10000
 
@@ -57,12 +57,12 @@ class MainMap:
 
         print ("    ",end='')
         for i in range (emptyline, MainMap.MAX_WIDTH+4-emptyline):
-            print ("%02d  "%(i), end='')
+            print ("%02d  "%(i - emptyline), end='')
         print ("")
         print ("    " + "----"*24)
         for i in range (emptyline, MainMap.MAX_HEIGHT+4-emptyline):
-            print ("%02d| "%(i),end='')
-            for j in range (emptyline, MainMap.MAX_WIDTH-emptyline):
+            print ("%02d| "%(i - emptyline),end='')
+            for j in range (emptyline, MainMap.MAX_WIDTH+4-emptyline):
                 print ("\033[0;%dm" %(30+self.mapArray[i,j,0]%8), end='')
                 print ("%02d  " %(self.mapArray[i,j,e]), end='')
                 print ("\033[0m", end='')
@@ -90,21 +90,21 @@ class MainMap:
         # Width / Height
         if self.unionLev >= 12:
             self.curWidth = 22
-            self.curHeight = 22
+            self.curHeight = 20
         elif self.unionLev >= 10:
             self.curWidth = 20
-            self.curHeight = 20
+            self.curHeight = 18
         elif self.unionLev >= 8:
             self.curWidth = 18
-            self.curHeight = 18
+            self.curHeight = 16
         elif self.unionLev >= 6:
             self.curWidth = 16
-            self.curHeight = 16
+            self.curHeight = 14
         elif self.unionLev >= 4:
             self.curWidth = 14
-            self.curHeight = 14
+            self.curHeight = 12
         else:
-            self.curWidth = 10
+            self.curWidth = 12
             self.curHeight = 10
 
         # Initialize Map
@@ -114,37 +114,37 @@ class MainMap:
                 # Set current slot is possible
                 self.mapArray[i,j,1] = 1
                 # Set section of map
-                if i >= j and i < (MainMap.MAX_WIDTH+2-j) and i < 13 and j < 13:
+                if i >= j and i < (MainMap.MAX_HEIGHT+4-j) and i < 12 and j < 13:
                     self.mapArray[i,j,0] = 0
-                    if j > 7:
+                    if j > 6:
                         self.mapArray[i,j,0] += 1
-                elif i >= j and i < (MainMap.MAX_WIDTH+2-j) and i >= 13 and j < 13:
+                elif i >= j-1 and i < (MainMap.MAX_HEIGHT+4-j) and i >= 12 and j < 13:
                     self.mapArray[i,j,0] = 2
-                    if j > 7:
+                    if j > 6:
                         self.mapArray[i,j,0] += 1
-                elif i >= j and i >= (MainMap.MAX_WIDTH+2-j) and i >= 13 and j < 13:
+                elif i >= j-1 and i >= (MainMap.MAX_HEIGHT+4-j) and i >= 12 and j < 13:
                     self.mapArray[i,j,0] = 4
                     if i < 17:
                         self.mapArray[i,j,0] += 1
-                elif i >= j and i >= (MainMap.MAX_WIDTH+2-j) and i >= 13 and j >= 13:
+                elif i >= j-1 and i >= (MainMap.MAX_HEIGHT+4+1-j) and i >= 12 and j >= 13:
                     self.mapArray[i,j,0] = 6
                     if i < 17:
                         self.mapArray[i,j,0] += 1
-                elif i < j and i >= (MainMap.MAX_WIDTH+2-j) and i >= 13 and j >= 13:
+                elif i < j-1 and i >= (MainMap.MAX_HEIGHT+4+1-j) and i >= 12 and j >= 13:
                     self.mapArray[i,j,0] = 8
-                    if j < 17:
+                    if j < 19:
                         self.mapArray[i,j,0] += 1
-                elif i < j and i >= (MainMap.MAX_WIDTH+2-j) and i < 13 and j >= 13:
+                elif i < j and i >= (MainMap.MAX_HEIGHT+4+1-j) and i < 12 and j >= 13:
                     self.mapArray[i,j,0] = 10
-                    if j < 17:
+                    if j < 19:
                         self.mapArray[i,j,0] += 1
-                elif i < j and i < (MainMap.MAX_WIDTH+2-j) and i < 13 and j >= 13:
+                elif i < j and i < (MainMap.MAX_HEIGHT+4+1-j) and i < 12 and j >= 13:
                     self.mapArray[i,j,0] = 12
-                    if i > 7:
+                    if i > 6:
                         self.mapArray[i,j,0] += 1
-                elif i < j and i < (MainMap.MAX_WIDTH+2-j) and i < 13 and j < 13:
+                elif i < j and i < (MainMap.MAX_HEIGHT+4-j) and i < 12 and j < 13:
                     self.mapArray[i,j,0] = 14
-                    if i > 7:
+                    if i > 6:
                         self.mapArray[i,j,0] += 1
                 else:
                     print ("Couldn't be here i : %d j : %d" %(i,j))
