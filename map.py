@@ -68,6 +68,37 @@ class MainMap:
 
         return retq
 
+    def addfirstblock (self, row, column, block):
+        retq = []
+        row += 4
+        column += 4
+        
+        new_obj = copy.deepcopy (self)
+        new_map = new_obj.mapArray[:,:,:]
+        new_map_1 = new_map[row-2:row+3, column-2:column+3,1]
+        new_map_2 = new_map[row-2:row+3, column-2:column+3,2]
+
+        new_map_1 -= block.map
+
+        # Check possibility
+        possi = True
+        new_score = 0
+        for ii in range (5):
+            for jj in range (5):
+                if new_map_1[ii,jj] < 0:
+                    possi = False
+                elif block.map[ii,jj] == 1 and new_map_1[ii,jj] == 0:
+                    new_score += new_map_2[ii,jj]
+
+        if possi == True:
+            new_obj.updatescore (new_obj.score + new_score)
+            new_obj.popblockfromlist (block)
+            new_obj.useBlockNum += (block.level + 1)
+            retq.append (new_obj)
+
+        return retq
+
+
     def updatemap (self, new_map):
         self.mapArray = new_map
     def updatescore (self, score):
