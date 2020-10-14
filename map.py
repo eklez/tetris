@@ -23,11 +23,17 @@ class MainMap:
         self.blockList = []
         self.useBlockNum = 0
 
-    def calcscore(self):
-        return self.score
+    def getnormalizedscore(self):
+        return self.score / self.useBlockNum
 
     def isslotpossible (self, row, column):
         return self.mapArray[row, column, 1]
+
+    def popblockfromlist (self, block):
+        for b in self.blockList:
+            if b.level == block.level and b.type == block.type:
+                self.blockList.remove (b)
+                break
 
     def addblock (self, row, column, block):
         retq = []
@@ -39,8 +45,8 @@ class MainMap:
                     continue
                 new_obj = copy.deepcopy (self)
                 new_map = new_obj.mapArray[:,:,:]
-                new_map_1 = new_map[row-j:row-j+5, column-i:column-i+5,1]
-                new_map_2 = new_map[row-j:row-j+5, column-i:column-i+5,2]
+                new_map_1 = new_map[row-i:row-i+5, column-j:column-j+5,1]
+                new_map_2 = new_map[row-i:row-i+5, column-j:column-j+5,2]
 
                 new_map_1 -= block.map
 
@@ -51,11 +57,13 @@ class MainMap:
                     for jj in range (5):
                         if new_map_1[ii,jj] < 0:
                             possi = False
-                        else:
+                        elif block.map[ii,jj] == 1 and new_map_1[ii,jj] == 0:
                             new_score += new_map_2[ii,jj]
 
                 if possi == True:
-                    new_obj.updatescore (new_obj.score + new_score)        
+                    new_obj.updatescore (new_obj.score + new_score)
+                    new_obj.popblockfromlist (block)
+                    new_obj.useBlockNum += (block.level + 1)
                     retq.append (new_obj)
 
         return retq

@@ -66,8 +66,8 @@ class Block:
         self.map[0,3] = 1
 
     def __init__(self, blocktype, level):
-        self.level = 0
-        self.type = 0
+        self.level = level
+        self.type = blocktype
         self.map = np.zeros ([5, 5])
 
         if blocktype == 0:

@@ -48,6 +48,54 @@ def initialize_score (m):
         score = int (config['SECTION_SCORE']['SEC'+str(i)])
         m.initscore (i, score)
 
+def check_duplicate (m, mlist):
+    for i in mlist:
+        comparison = i.mapArray[:,:,1] == m.mapArray[:,:,1]
+        if comparison.all ():
+            return True
+    return False
+
+def check_block_all (m, row, column, b):
+    possible_ret = []
+    for i in m.addblock (row, column, b):
+        if not check_duplicate (i, possible_ret):
+            possible_ret.append (i)
+    b.rotate_counter ()
+    for i in m.addblock (row, column, b):
+        if not check_duplicate (i, possible_ret):
+            possible_ret.append (i)
+    b.rotate_counter ()
+    for i in m.addblock (row, column, b):
+        if not check_duplicate (i, possible_ret):
+            possible_ret.append (i)
+    b.rotate_counter ()
+    for i in m.addblock (row, column, b):
+        if not check_duplicate (i, possible_ret):
+            possible_ret.append (i)
+    b.rotate_counter ()
+
+    b.flip ()
+    for i in m.addblock (row, column, b):
+        if not check_duplicate (i, possible_ret):
+            possible_ret.append (i)
+    b.rotate_counter ()
+    for i in m.addblock (row, column, b):
+        if not check_duplicate (i, possible_ret):
+            possible_ret.append (i)
+    b.rotate_counter () 
+    for i in m.addblock (row, column, b):
+        if not check_duplicate (i, possible_ret):
+            possible_ret.append (i)
+    b.rotate_counter ()
+    for i in m.addblock (row, column, b):
+        if not check_duplicate (i, possible_ret):
+            possible_ret.append (i)
+    b.rotate_counter ()
+    b.flip ()
+
+    return possible_ret
+
+
 def main_start ():
 
     # Initialize
@@ -58,11 +106,25 @@ def main_start ():
     mainMap.updateblocklist (blockList)
     initialize_score (mainMap)
 
-    mainMap.printmap (2)
-    ret = mainMap.addblock (10,10,mainMap.blockList[0])
-    for i in ret:
-        print (i.score)
-        i.printmap (1)
+    max_n_score = 0
+    depth_list = []
+
+    # First place to put block
+    first = [9, 10]
+    for b in mainMap.blockList:
+        ret = check_block_all (mainMap, first[0], first[1], b)
+        for e in ret:
+            normalized_score = e.getnormalizedscore ()
+            if normalized_score > max_n_score:
+                max_n_score = normalized_score
+                depth_list.clear ()
+            elif normalized_score == max_n_score:
+                depth_list.append (e)
+            else:
+                continue
+
+    for e in depth_list:
+        e.printmap(1)
 
 if __name__ == "__main__":
     main_start ()
