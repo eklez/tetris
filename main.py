@@ -182,6 +182,7 @@ def find_max_pos (m):
 
 def level_search (level_list):
     max_n_score = 0
+    max_match_point = 0
     depth_list = []
     # Possible Map
     for eMap in level_list:
@@ -189,9 +190,16 @@ def level_search (level_list):
         # Possible Pos
         for ePos in pos_list:
             # Possible Block
+            # Actually show poor performance
             for eb in eMap.blockList:
                 ret = check_block_all (eMap, ePos[0]-4, ePos[1]-4, eb)
                 for e in ret:
+                    # Calculate How match the block is
+                    match_point = 0
+                    for mPos in pos_list:
+                        if e.mapArray[mPos[0]-4, mPos[1]-4,1] == 0:
+                            match_point += 1
+                    # Algo1 : Goto max section
                     normalized_score = e.getnormalizedscore ()
                     if normalized_score > max_n_score:
                         if max_n_score < normalized_score - THRESHOLD:
@@ -199,7 +207,12 @@ def level_search (level_list):
                         max_n_score = normalized_score
                         if not check_duplicate (e, depth_list):
                             depth_list.append (e)
+                        max_match_point = match_point
+                    # Algo2 : Best match
                     elif normalized_score == max_n_score:
+                        # Need to check match point to enhance performance
+                        if max_match_point > match_point:
+                            continue
                         if not check_duplicate (e, depth_list):
                             depth_list.append (e)
                    
@@ -241,27 +254,27 @@ def main_start ():
 
     print ("[+] First Round End")
     print ("[+] Total number of cases : %d" %(len (depth_list)))
+    depth_list[0].printmap (1)
 
     depth_list = level_search (depth_list)
 
     print ("[+] Second Round End")
     print ("[+] Total number of cases : %d" %(len (depth_list)))
+    depth_list[0].printmap (1)
 
     depth_list = level_search (depth_list)
     print ("[+] Third Round End")
     print ("[+] Total number of cases : %d" %(len (depth_list)))
+    depth_list[0].printmap (1)
 
-    '''
     depth_list = level_search (depth_list)
     print ("[+] Fourth Round End")
     print ("[+] Total number of cases : %d" %(len (depth_list)))
-
+    '''
     depth_list = level_search (depth_list)
     print ("[+] Fifth Round End")
     print ("[+] Total number of cases : %d" %(len (depth_list)))
     '''
-    for e in depth_list:
-        e.printmap (1)
 
 if __name__ == "__main__":
     main_start ()
