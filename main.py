@@ -5,6 +5,7 @@ import configparser
 
 blockList = []
 TOTAL_UNION = 0
+THRESHOLD = 0.5
 config = configparser.ConfigParser ()
 
 def genblock (c, l):
@@ -106,9 +107,12 @@ def main_start ():
     mainMap.updateblocklist (blockList)
     initialize_score (mainMap)
 
+    global THRESHOLD
     max_n_score = 0
+    level_list = []
     depth_list = []
 
+    # No level_list : level_list == mainMap
     # First place to put block
     first = [9, 10]
     for b in mainMap.blockList:
@@ -116,12 +120,33 @@ def main_start ():
         for e in ret:
             normalized_score = e.getnormalizedscore ()
             if normalized_score > max_n_score:
+                if max_n_score < normalized_score - THRESHOLD:
+                    depth_list.clear ()
                 max_n_score = normalized_score
-                depth_list.clear ()
+                depth_list.append (e)
             elif normalized_score == max_n_score:
                 depth_list.append (e)
             else:
                 continue
+
+    print ("First Round End")
+    level_list = depth_list
+    depth_list = []
+    second = [9,7]
+    for e in level_list:
+        for b in e.blockList:
+            ret = check_block_all (e, second[0], second[1], b)
+            for bb in ret:
+                normalized_score = bb.getnormalizedscore ()
+                if normalized_score > max_n_score:
+                    if max_n_score < normalized_score - THRESHOLD:
+                        depth_list.clear ()
+                    max_n_score = normalized_score
+                    depth_list.append (bb)
+                elif normalized_score == max_n_score:
+                    depth_list.append (bb)
+                else:
+                    continue
 
     for e in depth_list:
         e.printmap(1)
